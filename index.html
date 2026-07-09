@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Spira J— Un lugar para eso que no quieres olvidar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#730321;          /* Vino principal */
+    --ink-deep:#400118;     /* Vino oscuro */
+    --sand:#BFB78F;         /* Oliva */
+    --cream:#EBF2DC;        /* Verde crema suave */
+    --mist:#EBF2DC;         /* Mismo crema para coherencia */
+    --stone:#9a8a6e;        /* Oliva oscurecido (para textos secundarios) */
+    --paper:#F2F2F2;        /* Gris claro de fondo */
+    --line:rgba(115,3,33,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    font-weight:300;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--ink);color:var(--cream)}
+  
+  /* Texturas y atmósfera */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:1;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(235,242,220,.25), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(191,183,143,.18), transparent 50%);
+  }
+  body::after{
+    content:'';
+    position:fixed;inset:0;
+    pointer-events:none;
+    z-index:2;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity:.6;
+  }
+  
+  /* NAV */
+  nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    padding:1.5rem 3rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    backdrop-filter:blur(12px);
+    background:rgba(251,248,244,.7);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Playfair Display',serif;
+    font-size:1.6rem;
+    font-weight:500;
+    letter-spacing:.02em;
+    font-style:italic;
+    display:flex;
+    align-items:center;
+    gap:.7rem;
+  }
+  .logo img{
+    height:34px;
+    width:auto;
+    /* Si el caracol es oscuro/negro, lo coloreamos con el vino principal */
+    filter:brightness(0) saturate(100%) invert(11%) sepia(82%) saturate(4847%) hue-rotate(338deg) brightness(85%) contrast(108%);
+  }
+  .logo span{
+    font-style:normal;
+    font-weight:400;
+  }
+  .nav-links{
+    display:flex;
+    gap:2.5rem;
+    list-style:none;
+  }
+  .nav-links a{
+    color:var(--ink);
+    text-decoration:none;
+    font-size:.78rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-weight:400;
+    transition:opacity .3s;
+    position:relative;
+  }
+  .nav-links a:hover{opacity:.6}
+  .nav-links a::after{
+    content:'';
+    position:absolute;
+    bottom:-4px;left:0;
+    width:0;height:1px;
+    background:var(--ink);
+    transition:width .3s ease;
+  }
+  .nav-links a:hover::after{width:100%}
+  
+  /* HERO */
+ .hero{
+    min-height:100vh;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    position:relative;
+    background-image:url('imagenes/hero-fondo.jpg');
+    background-size:cover;
+    background-position:center right;
+    overflow:hidden;
+  }
+  /* Capa oscura encima de la foto para que el texto se lea bien */
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(to right, rgba(242,242,242,0.95) 0%, rgba(242,242,242,0.7) 35%, transparent 55%);
+    z-index:1;
+  }
+  .hero-content{
+    position:relative;
+    z-index:2;
+    max-width:600px;
+    padding:8rem 3rem 4rem 6rem;
+  }
+  .hero-eyebrow{
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    font-size:.7rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--stone);
+    margin-bottom:2rem;
+    opacity:0;
+    animation:fadeUp .8s .2s forwards;
+  }
+  .hero-eyebrow::before{
+    content:'';
+    width:48px;height:1px;
+    background:var(--stone);
+  }
+  h1{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.5rem,4.5vw,4.5rem);
+    font-weight:400;
+    line-height:1.02;
+    letter-spacing:-.02em;
+    color:var(--ink-deep);
+    margin-bottom:2rem;
+    opacity:0;
+    animation:fadeUp .9s .4s forwards;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--ink);
+    font-weight:500;
+  }
+  .hero-quote{
+    font-family:'Playfair Display',serif;
+    font-style:bold;
+    font-size:1.15rem;
+    line-height:1.7;
+    color:var(--ink);
+    max-width:none;
+    white-space:nowrap;
+    margin-bottom:3rem;
+    opacity:0;
+    animation:fadeUp .9s .6s forwards;
+  }
+  .hero-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:.8rem;
+    padding:1.1rem 2.2rem;
+    background:var(--ink-deep);
+    color:var(--cream);
+    text-decoration:none;
+    font-size:.78rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    transition:all .4s;
+    border:1px solid var(--ink-deep);
+    opacity:0;
+    animation:fadeUp .9s .8s forwards;
+  }
+  .hero-cta:hover{
+    background:transparent;
+    color:var(--ink-deep);
+  }
+  .hero-cta svg{transition:transform .4s}
+  .hero-cta:hover svg{transform:translateX(6px)}
+  
+  /* Hero visual — carrusel de fotos lifestyle */
+  .hero-visual{
+    position:relative;
+    aspect-ratio:1;
+    max-width:520px;
+    margin:0 auto;
+    opacity:0;
+    animation:fadeIn 1.4s .5s forwards;
+  }
+  .lifestyle-carousel {
+  position: relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+
+  }
+  .lifestyle-img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity 1.5s ease;
+  }
+  .lifestyle-img.active{opacity:1}
+  
+  /* SECTION SHARED */
+  section{
+    position:relative;
+    z-index:3;
+    padding:6rem 5rem;
+  }
+  .section-eyebrow{
+    font-size:.72rem;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+    color:var(--stone);
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    margin-bottom:1.5rem;
+  }
+  .section-eyebrow::before{
+    content:'';
+    width:32px;height:1px;
+    background:var(--stone);
+  }
+  .section-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.2rem,4vw,3.5rem);
+    font-weight:400;
+    line-height:1.1;
+    color:var(--ink-deep);
+    margin-bottom:1.5rem;
+    max-width:700px;
+  }
+  .break-desktop{display:inline}
+  .section-title em{font-style:italic; font-weight:500}
+  .section-intro{
+    max-width:520px;
+    color:var(--ink);
+    line-height:1.8;
+    font-size:1.02rem;
+  }
+  
+  /* MANIFIESTO */
+  .manifiesto{
+    background:var(--ink-deep);
+    color:var(--cream);
+    text-align:center;
+    padding:8rem 5rem;
+  }
+  .manifiesto-text{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(1.8rem,3.5vw,3rem);
+    line-height:1.4;
+    font-weight:400;
+    max-width:900px;
+    margin:0 auto;
+    font-style:italic;
+  }
+  .manifiesto-text span{
+    color:var(--sand);
+    font-style:normal;
+  }
+  .manifiesto-divider{
+    width:1px;
+    height:60px;
+    background:var(--sand);
+    margin:3rem auto 0;
+    opacity:.5;
+  }
+  
+  /* CATÁLOGO */
+  .catalogo-header{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4rem;
+    align-items:end;
+    margin-bottom:5rem;
+  }
+  .filters{
+    display:flex;
+    gap:.6rem;
+    flex-wrap:wrap;
+  }
+  .filter{
+    padding:.55rem 1.2rem;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:all .3s;
+    font-family:inherit;
+  }
+  .filter:hover{border-color:var(--ink)}
+  .filter.active{
+    background:var(--ink-deep);
+    color:var(--cream);
+    border-color:var(--ink-deep);
+  }
+  
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:3rem 2.5rem;
+  }
+  
+ .product{
+    position:relative;
+    cursor:pointer;
+    transition:transform .5s ease;
+    max-width:300px;
+    margin:0 auto;
+  }
+ .grid-journals .product{
+    max-width:600px;
+    margin:0 auto;
+  }
+  .product:hover{transform:translateY(-6px)}
+  
+ .product-image{
+    aspect-ratio:1/1;
+    background:#ffffff;
+    margin-bottom:1.5rem;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+.grid-journals .product-image{
+    max-width:none;
+  }
+.product-image svg{
+    width:100%;height:100%;
+    transition:transform .8s ease;
+    transform:scale(1.6);
+  }
+  .product:hover .product-image svg{transform:scale(1.66)}
+ 
+
+  .product-image .journal-img{
+    object-fit:cover;
+    padding:0;
+    background:#ffffff;
+  }
+
+ .grid-journals{
+    grid-template-columns:repeat(2, 1fr);
+    gap:2rem;
+    max-width:1500px;
+    margin:0 auto;
+    padding:0 2rem;
+  }
+
+  .product-image img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .8s ease;
+  }
+  .product:hover .product-image img{transform:scale(1.04)}
+  
+  /* Selector de colores */
+  .color-selector{
+    display:flex;
+    gap:.6rem;
+    margin-bottom:1.2rem;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .color-label{
+    font-size:.62rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--stone);
+    margin-right:.3rem;
+  }
+  .color-swatch{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    border:1px solid var(--line);
+    cursor:pointer;
+    padding:0;
+    transition:transform .25s ease;
+    outline:none;
+  }
+  .color-swatch:hover{transform:scale(1.12)}
+  .color-swatch.active{
+    box-shadow:0 0 0 2px var(--paper), 0 0 0 3px var(--ink-deep);
+  }
+  .color-name{
+    font-style:italic;
+    font-family:'Playfair Display',serif;
+    font-size:.85rem;
+    color:var(--ink);
+    margin-left:.4rem;
+  }
+  
+  /* Subtítulo de subsección dentro del catálogo */
+.subsection{
+    margin:6rem 0 3rem;
+    padding:4rem 5rem 0 5rem;
+    border-top:1px solid var(--line);
+    display:block;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:2rem;
+    flex-wrap:wrap;
+  }
+
+  .subsection:first-of-type{
+    margin-top:3rem;
+    padding-top:0;
+    border-top:none;
+  }
+  
+  .product-badge{
+    position:absolute;
+    top:1rem;left:1rem;
+    background:var(--paper);
+    padding:.4rem .8rem;
+    font-size:.62rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    z-index:5;
+  }
+  
+.product-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:1rem;
+    margin-bottom:.4rem;
+    padding-left:1rem;
+    padding-right:1rem;
+  }
+  .product-name{
+    font-family:'Playfair Display',serif;
+    font-size:1.5rem;
+    font-weight:500;
+    color:var(--ink-deep);
+  }
+  .product-name em{font-style:italic}
+  .product-price{
+    font-size:.95rem;
+    color:var(--ink);
+    letter-spacing:.05em;
+    white-space:nowrap;
+  }
+.product-desc{
+    font-size:.88rem;
+    color:var(--stone);
+    line-height:1.6;
+    margin-bottom:1rem;
+    padding-left:1rem;
+    padding-right:1rem;
+  }
+.product-ideal{
+    font-style:italic;
+    font-size:.78rem;
+    color:var(--ink);
+    padding-top:1rem;
+    padding-left:1rem;
+    padding-right:1rem;
+    border-top:1px solid var(--line);
+    margin-bottom:1.2rem;
+    line-height:1.6;
+  }
+  .product-ideal::before{
+    content:'Ideal para — ';
+    font-style:normal;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    font-size:.65rem;
+    color:var(--stone);
+    display:block;
+    margin-bottom:.3rem;
+  }
+.product-cta{
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    color:var(--ink-deep);
+    text-decoration:none;
+    font-size:.72rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    border-bottom:1px solid var(--ink-deep);
+    padding-bottom:.3rem;
+    margin-left:1rem;
+    transition:all .3s;
+  }
+  .product-cta:hover{gap:.9rem}
+  
+  /* FILOSOFÍA */
+  .filosofia{
+    background:var(--sand);
+    padding:8rem 5rem;
+    overflow:hidden;
+  }
+  .filosofia-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:5rem;
+    align-items:center;
+    max-width:1200px;
+    margin:0 auto;
+  }
+  .pilares{
+    display:flex;
+    flex-direction:column;
+    gap:2.5rem;
+  }
+  .pilar{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:1.5rem;
+    padding-bottom:2.5rem;
+    border-bottom:1px solid rgba(47,79,90,.15);
+  }
+  .pilar:last-child{border:none; padding:0}
+  .pilar-num{
+    font-family:'Playfair Display',serif;
+    font-size:2.5rem;
+    font-style:italic;
+    color:var(--ink-deep);
+    font-weight:400;
+    line-height:.9;
+  }
+  .pilar-title{
+    font-family:'Playfair Display',serif;
+    font-size:1.4rem;
+    font-weight:500;
+    color:var(--ink-deep);
+    margin-bottom:.6rem;
+  }
+  .pilar-desc{
+    font-size:.95rem;
+    color:var(--ink);
+    line-height:1.7;
+  }
+  
+  /* CONTACTO */
+  .contacto{
+    background:var(--ink-deep);
+    color:var(--cream);
+    padding:8rem 5rem;
+  }
+  .contacto-grid{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:5rem;
+    align-items:center;
+    max-width:1200px;
+    margin:0 auto;
+  }
+  .contacto-visual{
+    aspect-ratio:1;
+    max-width:420px;
+    margin:0 auto;
+  }
+  .contacto-visual svg{
+    width:100%;
+    height:100%;
+    animation:rotate 80s linear infinite;
+  }
+  .contacto-text{text-align:left}
+  .contacto .section-eyebrow{color:var(--mist)}
+  .contacto .section-eyebrow::before{background:var(--mist)}
+  .contacto h2{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.2rem,4vw,3.8rem);
+    font-weight:400;
+    line-height:1.1;
+    margin-bottom:1.5rem;
+  }
+  .contacto h2 em{font-style:italic; color:var(--sand)}
+  .contacto p{
+    max-width:520px;
+    margin:0 0 2.5rem;
+    color:rgba(235,242,220,.8);
+    line-height:1.8;
+  }
+  .whatsapp-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:.8rem;
+    padding:1.3rem 2.8rem;
+    background:var(--sand);
+    color:var(--ink-deep);
+    text-decoration:none;
+    font-size:.8rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    font-weight:500;
+    transition:all .3s;
+    border:1px solid var(--sand);
+  }
+  .whatsapp-btn:hover{
+    background:transparent;
+    color:var(--sand);
+  }
+  
+  /* FOOTER */
+  footer{
+    background:var(--paper);
+    padding:3rem;
+    border-top:1px solid var(--line);
+    position:relative;
+    z-index:3;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1.5rem;
+  }
+  footer .logo{font-size:1.3rem}
+  footer p{
+    font-size:.75rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+    color:var(--stone);
+  }
+  
+  /* MODAL */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(31,57,66,.85);
+    backdrop-filter:blur(8px);
+    z-index:200;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:2rem;
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .modal-overlay.active{display:flex; opacity:1}
+  .modal{
+    background:var(--paper);
+    max-width:520px;
+    width:100%;
+    padding:3rem;
+    position:relative;
+  }
+  .modal-close{
+    position:absolute;
+    top:1.2rem;right:1.5rem;
+    background:none;
+    border:none;
+    font-size:1.5rem;
+    cursor:pointer;
+    color:var(--ink);
+    font-family:'Playfair Display',serif;
+  }
+  .modal h3{
+    font-family:'Playfair Display',serif;
+    font-size:2rem;
+    font-weight:400;
+    color:var(--ink-deep);
+    margin-bottom:.5rem;
+  }
+  .modal h3 em{font-style:italic}
+  .modal-price{
+    font-size:1.1rem;
+    color:var(--stone);
+    margin-bottom:2rem;
+    padding-bottom:1.5rem;
+    border-bottom:1px solid var(--line);
+  }
+  .modal p{
+    color:var(--ink);
+    line-height:1.8;
+    margin-bottom:2rem;
+  }
+  .modal-details{
+    background:var(--cream);
+    padding:1.5rem;
+    margin-bottom:2rem;
+  }
+  .modal-details strong{
+    display:block;
+    font-size:.7rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--stone);
+    margin-bottom:.5rem;
+    font-weight:500;
+  }
+  .modal-details span{
+    font-style:italic;
+    font-family:'Playfair Display',serif;
+    font-size:1rem;
+    color:var(--ink);
+  }
+  
+  /* RESPONSIVE */
+  /* TABLET (max 1100px) */
+  @media (max-width:1100px){
+    section{padding:5rem 3rem}
+    .manifiesto, .nosotros, .contacto{padding:6rem 3rem}
+  }
+  
+  /* MÓVIL (max 900px) */
+  @media (max-width:900px){
+    .break-desktop{display:none}
+    .filosofia-grid{
+      grid-template-columns:1fr;
+      gap:3rem;
+    }
+    .filosofia{
+      padding:5rem 2rem;
+    }
+    nav{padding:1rem 1.5rem}
+    .nav-links{gap:1rem}
+    .nav-links a{font-size:.65rem; letter-spacing:.12em}
+    .logo{font-size:1.3rem}
+    .logo img{height:28px}
+    .subsection{padding:2rem 1.5rem 0}
+.grid, .grid-journals{padding:0 1rem}
+    
+    /* Hero: el texto va arriba, la foto se mueve al fondo con menos opacidad */
+    .hero{
+      min-height:auto;
+      padding:0;
+      background-position:right center;
+    }
+    .hero-overlay{
+      background:linear-gradient(to bottom, rgba(242,242,242,0.95) 0%, rgba(242,242,242,0.8) 60%, rgba(242,242,242,0.4) 100%);
+    }
+    .hero-content{
+      .hero-content{
+      padding:7rem 2rem 5rem 2rem;
+      max-width:100%;
+    }
+    }
+    h1{font-size:clamp(2rem,9vw,3rem)}
+    .hero-quote{font-size:.95rem}
+    
+    /* Secciones: márgenes laterales reducidos pero con aire */
+    section{padding:4rem 2rem}
+    
+    /* Subsecciones: el título arriba, descripción debajo */
+    .subsection{
+      margin:4rem 0 2rem;
+      padding-top:3rem;
+    }
+    .subsection:first-of-type{
+      margin-top:2rem;
+      padding-top:0;
+    }
+    .subsection-desc{max-width:100%}
+    
+    /* NOSOTROS */
+    .nosotros{padding:5rem 2rem}
+    .nosotros-grid{
+      grid-template-columns:1fr;
+      gap:3rem;
+    }
+    
+    /* Manifiesto y contacto */
+    .manifiesto, .contacto{padding:5rem 2rem}
+    .contacto-grid{
+      grid-template-columns:1fr;
+      gap:3rem;
+    }
+    .contacto-visual{max-width:240px}
+    .contacto-text{text-align:center}
+    .contacto .section-eyebrow{justify-content:center}
+    .contacto p{margin-left:auto; margin-right:auto}
+    
+    /* Catálogo */
+    .catalogo-header{
+      grid-template-columns:1fr;
+      gap:2rem;
+    }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,320px));
+    gap:3rem 2.5rem;
+    max-width:1300px;
+    margin:0 auto;
+    padding:0 5rem;
+  }
+    .product-name{font-size:1.3rem}
+    
+    /* Modal */
+    .modal{padding:2rem}
+    
+    /* Footer */
+    footer{padding:2rem 1.5rem; flex-direction:column; text-align:center; gap:1rem}
+  }
+  
+  /* CELULAR PEQUEÑO (max 480px) */
+  @media (max-width:480px){
+    nav{padding:.8rem 1rem}
+    .nav-links{gap:.7rem}
+    .nav-links a{font-size:.6rem}
+    .hero-content{padding:6rem 1.5rem 4rem 1.5rem}
+    section{padding:3.5rem 1.5rem}
+    .filosofia, .manifiesto, .contacto{padding:4rem 1.rem}
+    h1{font-size:clamp(1.8rem,8vw,2.4rem)}
+    .section-title{font-size:1.8rem; line-height:1.25}
+  }
+  
+  /* ANIMATIONS */
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(20px)}
+    to{opacity:1; transform:translateY(0)}
+  }
+  @keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+  }
+  @keyframes rotate{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+  }
+  
+  .reveal{
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .8s ease, transform .8s ease;
+  }
+  .reveal.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+</style>
+</head>
+<script>
+const images = document.querySelectorAll('.carousel-img');
+
+let current = 0;
+
+setInterval(() => {
+  images[current].classList.remove('active');
+
+  current = (current + 1) % images.length;
+
+  images[current].classList.add('active');
+}, 3000);
+</script>
+<body>
+
+<nav>
+  <div class="logo">
+    <img src="imagenes/caracol.png" alt="Spira">
+    Spira<span>.</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#elige-journal">Catálogo</a></li>
+    <li><a href="#filosofia">Nosotros</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Spira Journals</div>
+    <h1>Todo&nbsp;empieza&nbsp;con&nbsp;una<br/><em>hoja en blanco.</em></h1>
+    <p class="hero-quote">Journals hechos a mano para quienes creemos en la tinta y el papel.</p>
+    <a href="#elige-journal" class="hero-cta">
+      Ver el catálogo
+      <svg width="18" height="10" viewBox="0 0 18 10" fill="none"><path d="M1 5h16m0 0L13 1m4 4l-4 4" stroke="currentColor" stroke-width="1"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- SUBSECCIÓN 1: JOURNALS -->
+  <div class="subsection" id="catalogo">
+    <h3 class="subsection-title">1. Elige tu <em>journal</em></h3>
+    <p class="subsection-desc">2 tamaños que se adaptan a tu estilo. Tienen tapa de cuero, elástico y cuadernillos personalizables.</p>
+  </div>
+  
+  <div class="grid grid-journals">
+    
+    <!-- JOURNAL A5 -->
+    <div class="product reveal" data-cat="journal" data-name="Journal A5" data-price="S/ 95">
+      <div class="product-image">
+        <img src="imagenes/journal-a5-marron.jpg" alt="Journal A5 Spira" class="journal-img" data-default="imagenes/journal-a5-marron.jpg">
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Journal <em>A5</em></h3>
+        <span class="product-price">S/ 95</span>
+      </div>
+      <p class="product-desc">Trae 3 cuadernillos en tamaño A5.Diario principal de planificación y escritura extendida. Espacio suficiente para desarrollar ideas y proyectos.</p>
+      <p class="product-ideal">Planificación personal o creativa, agenda, scrapbook, apuntes de clases, diario personal.</p>
+      
+      <div class="color-selector">
+        <span class="color-label">Color</span>
+        <button class="color-swatch active" style="background:#5d271b" data-color="Marrón" data-img="imagenes/journal-a5-marron.jpg" data-target="a5" title="Marrón"></button>
+        <button class="color-swatch" style="background:#730321" data-color="vino" data-img="imagenes/journal-a5-vino.jpg" data-target="a5" title="Vino"></button>
+        <button class="color-swatch" style="background:#3e5678" data-color="azul" data-img="imagenes/journal-a5-azul.jpg" data-target="a5" title="Azul"></button>
+               <span class="color-name" id="colorName-a5">Vino</span>
+      </div>
+      
+      <a href="#contacto" class="product-cta order-btn" data-product="Journal A5 (S/ 95)" data-color-target="a5">
+        Pedir por WhatsApp
+        <svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 4h12m0 0L10 1m3 3l-3 3" stroke="currentColor" stroke-width="1"/></svg>
+      </a>
+    </div>
+    
+    <!-- JOURNAL A6 -->
+    <div class="product reveal" data-cat="journal" data-name="Journal A6" data-price="S/ 75">
+      <div class="product-image">
+        <img src="imagenes/journal a6 vino.jpg" alt="Journal A6 Spira" class="journal-img" data-default="imagenes/journal-a6-vino.jpg">
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Journal <em>A6</em></h3>
+        <span class="product-price">S/ 75</span>
+      </div>
+      <p class="product-desc">Trae 2 cuadernos tamaño A6. Diario de bolsillo, para notas rápidas e ideas espontáneas. Siempre a mano, perfecto para llevar a cualquier lugar.</p>
+      <p class="product-ideal">Journaling diario, bitácora de viajes, bocetos, dibujos, seguimiento de rutinas.</p>
+      
+      <div class="color-selector">
+        <span class="color-label">Color</span>
+        <button class="color-swatch active" style="background:#730321" data-color="Vino" data-img="imagenes/journal a6 vino.jpg" data-target="a6" title="Vino"></button>
+        <button class="color-swatch" style="background:#3e5678" data-color="Azul" data-img="imagenes/journal a6 azul.jpg" data-target="a6" title="Azul - Cuero Crust"></button>
+        <button class="color-swatch" style="background:#5d271b" data-color="Marrón" data-img="imagenes/journal a6 marron.jpg" data-target="a6" title="Marron"></button>
+              <span class="color-name" id="colorName-a6">Vino</span>
+      </div>
+      
+      <a href="#contacto" class="product-cta order-btn" data-product="Journal A6 (S/ 75)" data-color-target="a6">
+        Pedir por WhatsApp
+        <svg width="14" height="8" viewBox="0 0 14 8" fill="none"><path d="M1 4h12m0 0L10 1m3 3l-3 3" stroke="currentColor" stroke-width="1"/></svg>
+      </a>
+    </div>
+    
+  </div>
+  
+  <!-- SUBSECCIÓN 2: TIPOS DE HOJA -->
+  <div class="subsection">
+    <h3 class="subsection-title">2. Elige las hojas <em>de tus cuadernos</em></h3>
+    <p class="subsection-desc">Elige el estilo de cuadernos que te van a acompañar. El color de la tapa puede ser natural o negro y papel bond avena es suave al tacto. </p>
+  </div>
+  
+  <div class="grid">
+    
+    <!-- CUADERNILLO RAYADO -->
+    <div class="product reveal" data-cat="cuadernillo" data-name="Cuadernillo Rayado" data-price="S/ 18">
+      <div class="product-image">
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <rect x="130" y="130" width="140" height="240" fill="#F2F2F2" stroke="#BFB78F" stroke-width="1"/>
+          <g stroke="#BFB78F" stroke-width="0.5" opacity="0.7">
+            <line x1="145" y1="160" x2="255" y2="160"/>
+            <line x1="145" y1="180" x2="255" y2="180"/>
+            <line x1="145" y1="200" x2="255" y2="200"/>
+            <line x1="145" y1="220" x2="255" y2="220"/>
+            <line x1="145" y1="240" x2="255" y2="240"/>
+            <line x1="145" y1="260" x2="255" y2="260"/>
+            <line x1="145" y1="280" x2="255" y2="280"/>
+            <line x1="145" y1="300" x2="255" y2="300"/>
+          </g>
+          <text x="200" y="350" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">rayado</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Cuadernillo <em>Rayado</em></h3>
+      </div>
+      <p class="product-desc">Papel bond avena con líneas suaves. Para quienes escriben mucho y prefieren la guía clásica del renglón.</p>
+      <p class="product-ideal">Diarios, cartas, escritura libre, apuntes de lectura, journaling reflexivo.</p>
+     
+    </div>
+    
+    <!-- CUADERNILLO CUADRICULADO -->
+    <div class="product reveal" data-cat="cuadernillo" data-name="Cuadernillo Cuadriculado" data-price="S/ 18">
+      <div class="product-image">
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <rect x="130" y="130" width="140" height="240" fill="#F2F2F2" stroke="#BFB78F" stroke-width="1"/>
+          <g stroke="#BFB78F" stroke-width="0.4" opacity="0.6">
+            <line x1="150" y1="140" x2="150" y2="360"/>
+            <line x1="170" y1="140" x2="170" y2="360"/>
+            <line x1="190" y1="140" x2="190" y2="360"/>
+            <line x1="210" y1="140" x2="210" y2="360"/>
+            <line x1="230" y1="140" x2="230" y2="360"/>
+            <line x1="250" y1="140" x2="250" y2="360"/>
+            <line x1="140" y1="150" x2="260" y2="150"/>
+            <line x1="140" y1="170" x2="260" y2="170"/>
+            <line x1="140" y1="190" x2="260" y2="190"/>
+            <line x1="140" y1="210" x2="260" y2="210"/>
+            <line x1="140" y1="230" x2="260" y2="230"/>
+            <line x1="140" y1="250" x2="260" y2="250"/>
+            <line x1="140" y1="270" x2="260" y2="270"/>
+            <line x1="140" y1="290" x2="260" y2="290"/>
+            <line x1="140" y1="310" x2="260" y2="310"/>
+          </g>
+          <text x="200" y="350" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">cuadriculado</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Cuadernillo <em>Cuadriculado</em></h3>
+      </div>
+      <p class="product-desc">Papel bond avena con cuadrícula clásica. La opción más versátil — texto, diagramas, números, sketches geométricos.</p>
+      <p class="product-ideal">Estudio, apuntes técnicos, cálculos, layouts ordenados, scrapbooking estructurado.</p>
+   
+    </div>
+    
+    <!-- CUADERNILLO BLANCO -->
+    <div class="product reveal" data-cat="cuadernillo" data-name="Cuadernillo Blanco" data-price="S/ 18">
+      <div class="product-image">
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <rect x="130" y="130" width="140" height="240" fill="#F2F2F2" stroke="#BFB78F" stroke-width="1"/>
+          <text x="200" y="350" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">blanco</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Cuadernillo <em>Blanco</em></h3>
+      </div>
+      <p class="product-desc"> Papel bond avena sin guías. Libertad total — la página en blanco que se vuelve lo que tú quieras.</p>
+      <p class="product-ideal">Dibujo libre, acuarelas, sketches, lettering, collage, ilustración.</p>
+     
+    </div>
+    
+    <!-- CUADERNILLO DOT GRID -->
+    <div class="product reveal" data-cat="cuadernillo" data-name="Cuadernillo Dot Grid" data-price="S/ 18">
+      <div class="product-image">
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <rect x="130" y="130" width="140" height="240" fill="#F2F2F2" stroke="#BFB78F" stroke-width="1"/>
+          <g fill="#BFB78F" opacity="0.7">
+            <circle cx="155" cy="160" r="1"/><circle cx="175" cy="160" r="1"/><circle cx="195" cy="160" r="1"/><circle cx="215" cy="160" r="1"/><circle cx="235" cy="160" r="1"/><circle cx="255" cy="160" r="1"/>
+            <circle cx="155" cy="180" r="1"/><circle cx="175" cy="180" r="1"/><circle cx="195" cy="180" r="1"/><circle cx="215" cy="180" r="1"/><circle cx="235" cy="180" r="1"/><circle cx="255" cy="180" r="1"/>
+            <circle cx="155" cy="200" r="1"/><circle cx="175" cy="200" r="1"/><circle cx="195" cy="200" r="1"/><circle cx="215" cy="200" r="1"/><circle cx="235" cy="200" r="1"/><circle cx="255" cy="200" r="1"/>
+            <circle cx="155" cy="220" r="1"/><circle cx="175" cy="220" r="1"/><circle cx="195" cy="220" r="1"/><circle cx="215" cy="220" r="1"/><circle cx="235" cy="220" r="1"/><circle cx="255" cy="220" r="1"/>
+            <circle cx="155" cy="240" r="1"/><circle cx="175" cy="240" r="1"/><circle cx="195" cy="240" r="1"/><circle cx="215" cy="240" r="1"/><circle cx="235" cy="240" r="1"/><circle cx="255" cy="240" r="1"/>
+            <circle cx="155" cy="260" r="1"/><circle cx="175" cy="260" r="1"/><circle cx="195" cy="260" r="1"/><circle cx="215" cy="260" r="1"/><circle cx="235" cy="260" r="1"/><circle cx="255" cy="260" r="1"/>
+            <circle cx="155" cy="280" r="1"/><circle cx="175" cy="280" r="1"/><circle cx="195" cy="280" r="1"/><circle cx="215" cy="280" r="1"/><circle cx="235" cy="280" r="1"/><circle cx="255" cy="280" r="1"/>
+            <circle cx="155" cy="300" r="1"/><circle cx="175" cy="300" r="1"/><circle cx="195" cy="300" r="1"/><circle cx="215" cy="300" r="1"/><circle cx="235" cy="300" r="1"/><circle cx="255" cy="300" r="1"/>
+          </g>
+          <text x="200" y="350" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">dot grid</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Cuadernillo <em>Dot Grid</em></h3>
+      </div>
+      <p class="product-desc">Papel bond avena con dot grid. La estructura justa para no perderte, la libertad para crear lo que quieras.</p>
+      <p class="product-ideal">Bullet journal, sketches, mind maps, layouts personalizados.</p>
+   
+    </div>
+    
+  </div>
+  
+  <!-- SUBSECCIÓN 3: COMPLEMENTOS -->
+  <div class="subsection">
+    <h3 class="subsection-title">3. Súmale tus <em>inserts favoritos</em></h3>
+    <p class="subsection-desc">Detalles para personalizar tu Spira. Insertos, accesorios y pequeños rituales para volver tu journal único.</p>
+  </div>
+  
+  <div class="grid">
+    
+   
+    
+    <!-- CLIP PARA FOTOS -->
+    <div class="product reveal" data-cat="inserto" data-name="Clip para fotos" data-price="S/ 8">
+      <div class="product-image">
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <rect x="150" y="170" width="100" height="120" fill="#F2F2F2" stroke="#BFB78F" stroke-width="1" transform="rotate(-5 200 230)"/>
+          <rect x="155" y="175" width="90" height="80" fill="#BFB78F" opacity="0.5" transform="rotate(-5 200 230)"/>
+          <rect x="170" y="260" width="60" height="6" fill="#730321" transform="rotate(-5 200 230)"/>
+          <text x="200" y="380" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">clip para fotos</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Clip para <em>fotos</em></h3>
+        <span class="product-price">S/ 8</span>
+      </div>
+      <p class="product-desc">Clip metálico pequeño para sujetar polaroids, postales o cualquier recuerdo en las páginas de tu Spira sin dañarlo.</p>
+      <p class="product-ideal">Fotos instantáneas, postales, marcador de página decorativo.</p>
+ 
+    </div>
+    
+    <!-- CHARMS -->
+    <div class="product reveal" data-cat="inserto" data-name="Charms" data-price="S/ 8">
+      <div class="product-image">
+        <span class="product-badge">Nuevo</span>
+        <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+          <rect width="400" height="500" fill="#ffffff"/>
+          <!-- línea de la que cuelgan -->
+          <line x1="80" y1="200" x2="320" y2="200" stroke="#BFB78F" stroke-width="0.6" opacity="0.6"/>
+          <!-- charm 1: corazón -->
+          <line x1="140" y1="200" x2="140" y2="240" stroke="#730321" stroke-width="0.8"/>
+          <path d="M 140 270 C 130 255, 115 255, 115 270 C 115 285, 140 300, 140 300 C 140 300, 165 285, 165 270 C 165 255, 150 255, 140 270 Z" fill="#730321"/>
+          <!-- charm 2: estrella -->
+          <line x1="200" y1="200" x2="200" y2="250" stroke="#400118" stroke-width="0.8"/>
+          <polygon points="200,255 207,275 228,275 211,287 218,308 200,295 182,308 189,287 172,275 193,275" fill="#400118"/>
+          <!-- charm 3: círculo con caracol -->
+          <line x1="260" y1="200" x2="260" y2="240" stroke="#BFB78F" stroke-width="0.8"/>
+          <circle cx="260" cy="275" r="20" fill="#BFB78F" stroke="#730321" stroke-width="1"/>
+          <path d="M 260 275 m -8 0 a 8 8 0 1 1 16 0 a 5 5 0 1 1 -10 0 a 2 2 0 1 1 4 0" fill="none" stroke="#730321" stroke-width="1.2"/>
+          <text x="200" y="360" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="11" fill="#730321">charms</text>
+        </svg>
+      </div>
+      <div class="product-meta">
+        <h3 class="product-name">Charms</h3>
+        <span class="product-price">S/ 8</span>
+      </div>
+      <p class="product-desc">Pequeños dijes para colgar del elástico de tu Spira. Detalles que vuelven tu journal un objeto personal, casi un amuleto.</p>
+      <p class="product-ideal">Personalizar, regalar, marcar etapas o intenciones especiales.</p>
+      
+    </div>
+    
+  </div>
+</section>
+
+<!--  NOSOTROS -->
+<section id="filosofia" class="filosofia">
+  <div class="filosofia-grid">
+    <div>
+      <div class="section-eyebrow">Nuestros journals</div>
+      <h2 class="section-title">Hecho para durar <br class="break-desktop"/>más que una <em>tendencia</em>.</h2>
+      <p class="section-intro" style="margin-top:1.5rem">Hacemos journals que perduran en el tiempo, cuando completes un cuadernillo, solo reemplázalo y continúa creando.</p>
+    </div>
+    
+     <div class="pilares">
+      <div class="pilar">
+        <div class="pilar-num">1.</div>
+        <div>
+          <h3 class="pilar-title">Escribe</h3>
+          <ul class="pilar-desc pilar-lista">
+            <li>El itinerario de tu próximo viaje.</li>
+            <li>Una idea que llegó sin avisar.</li>
+            <li>La carta que nunca enviaste.</li>
+            <li>La lista de libros que quieres leer.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-num">2.</div>
+        <div>
+           <h3 class="pilar-title">Crea</h3>
+          <ul class="pilar-desc pilar-lista">
+            <li>Un dibujo improvisado</li>
+            <li>Una idea desde cero</li>
+            <li>Un boceto de tu próximo proyecto</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pilar">
+        <div class="pilar-num">3.</div>
+        <div>
+           <h3 class="pilar-title">Guarda</h3>
+          <ul class="pilar-desc pilar-lista">
+            <li>Una entrada de concierto</li>
+            <li>Una foto especial</li>
+            <li>Un recorte que inspire</li>
+          </ul>
+        </div>
+      </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="contacto">
+  <div class="contacto-grid">
+    
+    <div class="contacto-visual">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <path id="spiral-contacto" d="M 200 200 m -2 0 a 2 2 0 1 1 4 0 a 4 4 0 1 1 -8 0 a 8 8 0 1 1 16 0 a 16 16 0 1 1 -32 0 a 32 32 0 1 1 64 0 a 64 64 0 1 1 -128 0 a 128 128 0 1 1 256 0 a 156 156 0 0 1 -180 154" />
+        </defs>
+        <use href="#spiral-contacto" fill="none" stroke="#EBF2DC" stroke-width="1" opacity="0.5"/>
+        <circle cx="200" cy="200" r="180" fill="none" stroke="#BFB78F" stroke-width="0.5" opacity="0.4" stroke-dasharray="2 6"/>
+        <text x="200" y="50" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="14" fill="#EBF2DC" opacity="0.7">memoria</text>
+        <text x="370" y="205" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="14" fill="#EBF2DC" opacity="0.7">permanencia</text>
+        <text x="200" y="365" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="14" fill="#EBF2DC" opacity="0.7">intimidad</text>
+        <text x="30" y="205" text-anchor="middle" font-family="Playfair Display" font-style="italic" font-size="14" fill="#EBF2DC" opacity="0.7">tiempo</text>
+      </svg>
+    </div>
+    
+    <div class="contacto-text">
+      <div class="section-eyebrow">Pedidos</div>
+      <h2>Escríbenos.<br/>Conversemos y <em>cremosidades juntos</em>.</h2>
+      <p>Hacemos pedidos a todo el Perú. Si te gustaría algún otro o color o diseño de cuaderno cuéntanos qué tienes en mente y lo hacemos realidad.</p>
+      <a href="https://wa.me/51999999999?text=Hola%20Spira!%20Quiero%20hacer%20un%20pedido" class="whatsapp-btn" id="mainWhatsapp">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        Escribir por WhatsApp
+      </a>
+    </div>
+    
+  </div>
+</section>
+
+<footer>
+  <div class="logo">
+    <img src="imagenes/caracol.png" alt="Spira">
+    Spira<span>.</span>
+  </div>
+  <p>Hecho a mano · Lima 2026</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="closeModal">×</button>
+    <h3 id="modalTitle"></h3>
+    <p class="modal-price" id="modalPrice"></p>
+    <p id="modalDesc"></p>
+    <div class="modal-details">
+      <strong>Ideal para</strong>
+      <span id="modalIdeal"></span>
+    </div>
+    <a href="#" class="whatsapp-btn" id="modalWhatsapp" style="background:var(--ink-deep); color:var(--cream); border-color:var(--ink-deep); display:flex; justify-content:center;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Pedir por WhatsApp
+    </a>
+  </div>
+</div>
+
+<script>
+  // CONFIGURACIÓN — cambia este número por el tuyo
+  const WHATSAPP_NUMBER = '51959039136'; // formato: código país + número, sin +
+  
+  // Nombres legibles de los colores (los que aparecen en cursiva al lado de los círculos)
+  const COLOR_NAMES = {
+    'vino': 'Vino',
+    'vino-oscuro': 'Vino oscuro',
+    'oliva': 'Oliva',
+    'crema': 'Crema'
+  };
+  
+  // Almacena el color seleccionado por cada journal
+  const selectedColor = { a5: 'Vino', a6: 'Vino' };
+  
+  // Selector de colores
+  document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', () => {
+      const target = swatch.dataset.target; // "a5" o "a6"
+      const color = swatch.dataset.color;
+      const newImg = swatch.dataset.img;
+      
+      // Cambia la imagen del journal correspondiente
+      const product = swatch.closest('.product');
+      const img = product.querySelector('.journal-img');
+      img.src = newImg;
+      
+      // Activa el swatch seleccionado, desactiva los demás del mismo journal
+      product.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+      swatch.classList.add('active');
+      
+      // Actualiza el nombre del color visible
+      const nameLabel = document.getElementById('colorName-' + target);
+      if (nameLabel) nameLabel.textContent = COLOR_NAMES[color] || color;
+      
+      // Guarda la selección actual
+      selectedColor[target] = COLOR_NAMES[color] || color;
+    });
+  });
+  
+  // CTAs producto -> WhatsApp
+  document.querySelectorAll('.order-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      let product = btn.dataset.product;
+      
+      // Si el producto tiene selector de color, añade el color al mensaje
+      const target = btn.dataset.colorTarget;
+      if (target && selectedColor[target]) {
+        product += ` en color ${selectedColor[target]}`;
+      }
+      
+      const text = `Hola Spira! Me interesa el ${product}. ¿Está disponible?`;
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, '_blank');
+    });
+  });
+  
+  // CTA principal
+  document.getElementById('mainWhatsapp').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola Spira! Quiero hacer un pedido')}`;
+  
+  // Reveal animations on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.15 });
+  
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  
+  // Carrusel de fotos lifestyle del hero
+  const lifestyleImgs = document.querySelectorAll('.lifestyle-img');
+  if (lifestyleImgs.length > 1) {
+    let currentImg = 0;
+    setInterval(() => {
+      lifestyleImgs[currentImg].classList.remove('active');
+      currentImg = (currentImg + 1) % lifestyleImgs.length;
+      lifestyleImgs[currentImg].classList.add('active');
+    }, 4000); // cambia cada 4 segundos
+  }
+</script>
+<img 
+  style="width:300px; display:block; position:fixed; top:20px; left:20px; z-index:99999;"
+>
+<script>
+const images = document.querySelectorAll('.carousel-img');
+
+let current = 0;
+
+setInterval(() => {
+
+  images[current].classList.remove('active');
+
+  current = (current + 1) % images.length;
+
+  images[current].classList.add('active');
+
+}, 2500);
+</script>
+</body>
+</html>
