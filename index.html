@@ -259,6 +259,7 @@
     margin-bottom:1.5rem;
     max-width:700px;
   }
+  .break-desktop{display:inline}
   .section-title em{font-style:italic; font-weight:500}
   .section-intro{
     max-width:520px;
@@ -732,6 +733,7 @@
   
   /* MÓVIL (max 900px) */
   @media (max-width:900px){
+    .break-desktop{display:none}
     nav{padding:1rem 1.5rem}
     .nav-links{gap:1rem}
     .nav-links a{font-size:.65rem; letter-spacing:.12em}
@@ -821,6 +823,7 @@
     section{padding:3.5rem 1.5rem}
     .filosofia, .manifiesto, .contacto{padding:4rem 1.rem}
     h1{font-size:clamp(1.8rem,8vw,2.4rem)}
+    .section-title{font-size:1.8rem; line-height:1.25}
   }
   
   /* ANIMATIONS */
@@ -869,7 +872,7 @@ setInterval(() => {
     Spira<span>.</span>
   </div>
   <ul class="nav-links">
-    <li><a href="#catalogo">Catálogo</a></li>
+    <li><a href="#elige-journal">Catálogo</a></li>
     <li><a href="#filosofia">Nosotros</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
@@ -1134,7 +1137,7 @@ setInterval(() => {
   <div class="filosofia-grid">
     <div>
       <div class="section-eyebrow">Nuestros journals</div>
-      <h2 class="section-title">Hecho para durar<br/>más que una <em>tendencia</em>.</h2>
+      <h2 class="section-title">Hecho para durar<br class="break-desktop"/>más que una <em>tendencia</em>.</h2>
       <p class="section-intro" style="margin-top:1.5rem">Hacemos journals que perduran en el tiempo, cuando completes un cuadernillo, solo reemplázalo y continúa creando.</p>
     </div>
     
